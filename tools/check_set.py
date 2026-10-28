@@ -51,7 +51,9 @@ def main():
     keys = list(parts)
     for i in range(len(keys)):
         for j in range(i + 1, len(keys)):
-            common = stems(parts[keys[i]]) & stems(parts[keys[j]])
+            # 어미가 붙은 꼴(계약/계약한)도 잡도록 앞부분이 같으면 겹침으로 본다
+            common = {min(x, y, key=len) for x in stems(parts[keys[i]]) for y in stems(parts[keys[j]])
+                      if x.startswith(y) or y.startswith(x)}
             if common:
                 errs.append(f"단어 겹침 {keys[i]}↔{keys[j]}: {', '.join(sorted(common))}")
     if a.hook and (stems(a.hook) >= stems(a.l1) or a.l1.strip('"?') in a.hook):
